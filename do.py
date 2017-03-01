@@ -94,8 +94,10 @@ def read_answer_B(url, s, headers):
             continue
 
 
+begin = time.time()
 bag = []
 link_bag = []
+os.system('clear')
 while True:
     action = input("what next? ")
     action = action.split(" ")
@@ -110,8 +112,6 @@ while True:
         get_questions(url, s, driver)
         os.system('clear')
         show_questions()
-
-
     elif action[0] == "back":
         os.system('clear')
         show_questions()
@@ -124,9 +124,21 @@ while True:
         except:
             continue
     elif action[0] == "quit":
-        print("see you, my friend.")
+        end = time.time()
+        seconds = end - begin
+        if seconds < 60:
+            print("* spend {:.2f} seconds" .format(seconds))
+        else:
+            minutes = seconds / 60
+            print("* spend {:.2f} minutes" .format(minutes))
+        print("* see you, my friend.")
         break
-
-
-
+    elif action[0] == "help":
+        print("* search [key words]      <----support multiple key words")
+        print("* go [question index]")
+        print("* back                    <----back to questions page")
+        print("* help                    <----show this page")
+        print("                          <----made by zkyyo")
+    elif action[0] == "zkyyp":
+        print("* it's me")
 
