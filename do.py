@@ -12,7 +12,7 @@ headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 driver = webdriver.PhantomJS(executable_path='/home/xu/a-project/python/dog/phantomjs-2.1.1-linux-x86_64/bin/phantomjs')
 
 def get_questions(url, s, driver):
-    global bag
+    global one_topic_bag
     global link_bag
 #   r = s.get("https://www.zhihu.com/search?type=content&q=%E8%AF%AD%E6%96%87", headers=headers)
 #   bs0bj = BeautifulSoup(r.text, "lxml")
@@ -36,13 +36,13 @@ def get_questions(url, s, driver):
         link = topic.find("div", {"class": "title"}).find("a")
         if link["href"] not in link_bag:
             link_bag.append(link["href"])
-            bag.append([title.get_text(), vote.get_text(), link["href"]])
+            one_topic_bag.append([title.get_text(), vote.get_text(), link["href"]])
 
 def show_questions():
-    global bah
+    global one_topic_bag
     index = 0
-    for topic in bag:
-        print(index, topic)
+    for topic in one_topic_bag:
+        print("[{:d}] {} (vote {}) " .format(index, topic[0], topic[1]))
         index += 1
         if index > 30:
             break
@@ -55,6 +55,7 @@ def read_answer_A(url, s, headers):
     question_detail = bs0bj.find("div", {"class": "zm-editable-content"})
     answers = bs0bj.findAll("div", {"class": "zm-editable-content clearfix"})
     
+    # there are some problems may be caused by cookies because of no login
     if question_title == None:
         read_answer_B(url, s, headers)
         return 
@@ -93,17 +94,22 @@ def read_answer_B(url, s, headers):
         except:
             continue
 
+def show_search_history():
+    global search_history_bag
+    for history in search_history_bag:
+        print(history)
 
 begin = time.time()
-bag = []
+search_history_bag = []
 link_bag = []
 os.system('clear')
 while True:
-    action = input("what next? ")
+    action = input("\nwhat next? ")
     action = action.split(" ")
     if action[0] == "search":
-        bag = []
+        one_topic_bag = []
         key_words = action[1:]
+        search_history_bag.append(key_words)
         sentence = ''
         for key_word in key_words:
             sentence += key_word
@@ -119,7 +125,7 @@ while True:
     elif action[0] == "go":
         try:
             index_enter = int(action[1])
-            url = "https://www.zhihu.com" + bag[index_enter][2]
+            url = "https://www.zhihu.com" + one_topic_bag[index_enter][2]
             os.system('clear')
             read_answer_A(url, s, headers)
         except:
@@ -140,6 +146,9 @@ while True:
         print("* back                    <----back to questions page")
         print("* help                    <----show this page")
         print("                          <----made by zkyyo")
-    elif action[0] == "zkyyp":
+    elif action[0] == "history":
+        show_search_history()
+    elif action[0] == "zkyyo":
         print("* it's me")
+
 
