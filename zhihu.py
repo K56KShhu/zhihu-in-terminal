@@ -28,24 +28,37 @@ def more_page(driver):
             print("<"+t+">\n")
             topics.append(t)
 
-xpath_vote = '//li[@class="item clearfix"]//div[@class="entry-left hidden-phone"]/a/'
-xpath_author = '//li[@class="item clearfix"]//div[@class="author-line summary-wrapper"]'
-xpath_summary = '//li[@class="item clearfix"]//div[@class="summary hidden-expanded"]'
 
 
 def main():
     driver = webdriver.PhantomJS(executable_path='/home/xu/a-project/python/dog/phantomjs-2.1.1-linux-x86_64/bin/phantomjs')
-    driver.get("https://www.zhihu.com/search?type=content&q=%E5%A4%A9%E6%B0%94")
+#   driver.get("https://www.zhihu.com/search?type=content&q=%E5%A4%A9%E6%B0%94")
+    driver.get("https://www.zhihu.com/search?type=content&q=%E8%AF%AD%E6%96%87")
     time.sleep(1)
 
-    topics = driver.find_element(By.)
+
+#   xpath_topics = '//li[@class="item clearfix"]'
+    xpath_topics = '//li[@data-type="Answer"]'
+    xpath_vote = '//div[@class="entry-left hidden-phone"]/a'
+    xpath_author = '//div[@class="author-line summary-wrapper"]'
+    xpath_summary = '//div[@class="summary hidden-expanded"]'
+    xpath_title = '//div[@class="title"]'
+
+    L = []
+    topics = driver.find_elements(By.XPATH, xpath_topics)
+    for topic in topics:
+        title = topic.find_element(By.XPATH, xpath_title)
+        vote = topic.find_element(By.XPATH, xpath_vote)
+        author = topic.find_element(By.XPATH, xpath_author)
+        summary = topic.find_element(By.XPATH, xpath_summary)
+        L.append([title.text, vote.text, author.text, summary.text])
+
     
+    print(L)
     
-    for t in titles:
-        t = t.text
-        if t not in topics:
-            print("<"+t+">\n")
-            topics.append(t)
+    for t in L:
+        print(t)
+        print("\n")
 
     show_more = input("* press [m] to show, [q] to quit: ")
     while True:
