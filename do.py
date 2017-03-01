@@ -67,7 +67,7 @@ def read_answer_A(url, s, headers):
         print(question_detail.get_text().strip())
         print(">" * 150)
         for answer in answers:
-            print(answer.get_text())
+            print(answer.get_text(separator='\n'))
             print(">" * 100)
     except AttributeError:
         print("can't found!")
@@ -88,7 +88,7 @@ def read_answer_B(url, s, headers):
 
     for answer in answers:
         try:
-            print(answer.find("span", {"class": "RichText CopyrightRichText-richText"}).get_text())
+            print(answer.find("span", {"class": "RichText CopyrightRichText-richText"}).get_text(separator='\n'))
             print(">" * 100)
         except:
             continue
@@ -102,6 +102,7 @@ while True:
     action = input("what next? ")
     action = action.split(" ")
     if action[0] == "search":
+        bag = []
         key_words = action[1:]
         sentence = ''
         for key_word in key_words:
