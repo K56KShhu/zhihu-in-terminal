@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+from threading import Thread
 from bs4 import BeautifulSoup
 from urllib.parse import quote
 from selenium import webdriver
@@ -37,7 +38,7 @@ def get_questions(url):
         link = topic.find("div", {"class": "title"}).find("a")
         if link["href"] not in link_bag:
             link_bag.append(link["href"])
-            one_topic_bag.append([title.get_text(), vote.get_text(), link["href"]])
+            one_topic_bag.append([link["href"], title.get_text(), vote.get_text()])
 
     return driver
 
@@ -64,7 +65,7 @@ def get_more_questions(url, driver):
         link = topic.find("div", {"class": "title"}).find("a")
         if link["href"] not in link_bag:
             link_bag.append(link["href"])
-            one_topic_bag.append([title.get_text(), vote.get_text(), link["href"]])
+            one_topic_bag.append([link["href"], title.get_text(), vote.get_text()])
 
     return driver
 
@@ -75,7 +76,7 @@ def show_questions():
     global first_search
     index = 0
     for topic in one_topic_bag:
-        print("[{:d}] {} (vote {}) " .format(index, topic[0], topic[1]))
+        print("[{:d}] {} (vote {}) " .format(index, topic[1], topic[2]))
         index += 1
 
 def read_answer_A(url, s, headers):
@@ -136,6 +137,7 @@ def show_search_history():
 begin = time.time()
 search_history_bag = []
 link_bag = []
+answers_bag = []
 is_first_search = True
 os.system('clear')
 while True:
@@ -168,7 +170,7 @@ while True:
     elif action[0] == "go":
         try:
             index_enter = int(action[1])
-            url = "https://www.zhihu.com" + one_topic_bag[index_enter][2]
+            url = "https://www.zhihu.com" + one_topic_bag[index_enter][0]
             os.system('clear')
             read_answer_A(url, s, headers)
         except:
