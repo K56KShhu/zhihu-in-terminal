@@ -5,6 +5,7 @@ from threading import Thread
 from bs4 import BeautifulSoup
 from urllib.parse import quote
 from selenium import webdriver
+from urllib.request import urlretrieve
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
@@ -91,9 +92,8 @@ def read_answer_A(url, s, headers):
     if question_title == None:
         read_answer_B(url, s, headers)
         return 
-    else:
-        print("<---plane A--->")
 
+    print("<---plane A--->")
     i = 0
     try: 
         print(">" * 150)
@@ -133,6 +133,50 @@ def show_search_history():
     global search_history_bag
     for history in search_history_bag:
         print(history)
+
+
+def find_imags(url, s, headers):
+    imags_amount = 0
+    r = s.get(url, headers=headers)
+    bs0bj = BeautifulSoup(r.text, "lxml")
+
+    answers = bs0bj.findAll("div", {"class": "List-item"})
+    if answers != []:
+        for answer in answers:
+            imags = answer.find("span", {"class": "RichText CopyrightRichText-richText"}).findAll("img")
+            
+            for imag in imags:
+                imag_link = imag["src"]
+                if imag_link.startswith("//") == False:
+                    download_imags(imag_link)
+                    imags_amount += 1
+    else:
+        answers = bs0bj.findAll("div", {"class": "zm-editable-content clearfix"})
+        for answer in answers:
+            imags = answer.findAll("img")
+
+            for imag in imags:
+                imag_link = imag["src"]
+                print(imag_link)
+                if imag_link.startswith("//") == False:
+                    download_imags(imag_link)
+                    imags_amount += 1
+
+    return imags_amount
+
+
+def download_imags(imag_link):
+    print(0)
+    save_path = imag_link.split("/")
+    print(1)
+    save_path = '/home/xu/a-project/zhihu-in-terminal/pictures/' + save_path[-1]
+    print(2)
+    imag_link = imag_link.replace("_b", "")
+    print(3)
+    print(imag_link)
+    urlretrieve(imag_link, save_path)
+
+
 
 begin = time.time()
 search_history_bag = []
@@ -175,6 +219,16 @@ while True:
             read_answer_A(url, s, headers)
         except:
             continue
+    # download the imags in one question
+    elif action[0] == "imags":
+        try:
+            index_enter = int(action[1])
+            url = "https://www.zhihu.com" + one_topic_bag[index_enter][0]
+            print(url)
+            imags_amount = find_imags(url, s, headers)
+            print("* successfully download {} imagas" .format(imags_amount))
+        except:
+            continue
     # quit the program
     elif action[0] == "quit":
         end = time.time()
@@ -188,11 +242,13 @@ while True:
         break
     # get some help information
     elif action[0] == "help":
-        print("* search [key words]      <----support multiple key words")
-        print("* go [question index]")
-        print("* back                    <----back to questions page")
-        print("* help                    <----show this page")
-        print("                          <----made by zkyyo")
+        print("* < search [key words] >      <----support multiple key words")
+        print("* < more >                    <----show more questions")
+        print("* < go [question index] >")
+        print("* < imags [question index] >  <----download the imags on this question")
+        print("* < back >                    <----back to questions page")
+        print("* < help >                    <----show this page")
+        print("                              <----made by zkyyo")
     # show the history of the key words
     elif action[0] == "history":
         show_search_history()
