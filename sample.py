@@ -13,6 +13,7 @@ from selenium.common.exceptions import NoSuchElementException
 s = requests.Session()
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"}
 
+
 def get_questions(url):
     global one_topic_bag
     global link_bag
@@ -43,6 +44,7 @@ def get_questions(url):
 
     return driver
 
+
 def get_more_questions(url, driver):
     global one_topic_bag
     global link_bag
@@ -71,7 +73,6 @@ def get_more_questions(url, driver):
     return driver
 
 
-
 def show_questions():
     global one_topic_bag
     global first_search
@@ -79,6 +80,7 @@ def show_questions():
     for topic in one_topic_bag:
         print("[{:d}] {} (vote {}) " .format(index, topic[1], topic[2]))
         index += 1
+
 
 def read_answer_A(url, s, headers):
     r = s.get(url, headers=headers)
@@ -108,6 +110,7 @@ def read_answer_A(url, s, headers):
     except AttributeError:
         print("can't found!")
 
+
 def read_answer_B(url, s, headers):
     r = s.get(url, headers=headers)
     bs0bj = BeautifulSoup(r.text, "lxml")
@@ -129,6 +132,7 @@ def read_answer_B(url, s, headers):
         except:
             continue
 
+
 def show_search_history():
     global search_history_bag
     for history in search_history_bag:
@@ -137,8 +141,17 @@ def show_search_history():
 
 def find_imags(url, s, headers):
     imags_amount = 0
+    threads = []
     r = s.get(url, headers=headers)
     bs0bj = BeautifulSoup(r.text, "lxml")
+
+    def download_imags(imag_link):
+        save_path = imag_link.split("/")
+        save_path = '/home/xu/a-project/zhihu-in-terminal/pictures/' + save_path[-1]
+        imag_link = imag_link.replace("_b", "")
+        print(imags_amount, imag_link)
+        urlretrieve(imag_link, save_path)
+        imags_amount += 1
 
     answers = bs0bj.findAll("div", {"class": "List-item"})
     if answers != []:
@@ -157,25 +170,15 @@ def find_imags(url, s, headers):
 
             for imag in imags:
                 imag_link = imag["src"]
-                print(imag_link)
                 if imag_link.startswith("//") == False:
-                    download_imags(imag_link)
-                    imags_amount += 1
+                    t = Thread(target = download_imags, args=[imag_link])
+                    t.start()
+                    threads.append(t)
+
+    for t in threads:
+        t.join()
 
     return imags_amount
-
-
-def download_imags(imag_link):
-    print(0)
-    save_path = imag_link.split("/")
-    print(1)
-    save_path = '/home/xu/a-project/zhihu-in-terminal/pictures/' + save_path[-1]
-    print(2)
-    imag_link = imag_link.replace("_b", "")
-    print(3)
-    print(imag_link)
-    urlretrieve(imag_link, save_path)
-
 
 
 begin = time.time()
@@ -184,6 +187,7 @@ link_bag = []
 answers_bag = []
 is_first_search = True
 os.system('clear')
+
 while True:
     action = input("\nwhat next? ")
     action = action.split(" ")
@@ -255,5 +259,3 @@ while True:
     # author
     elif action[0] == "zkyyo":
         print("* it's me")
-
-
