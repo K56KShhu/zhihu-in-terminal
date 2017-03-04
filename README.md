@@ -1,12 +1,16 @@
 # zhihu-in-terminal
 ## Intro
-I was inspired by [duduainankai/zhihu-terminal](https://github.com/search?utf8=%E2%9C%93&q=zhihu+terminal)  
-but I decide to simplify it and add some additional functions.  
-zhihu-in-terminal will be maintain at a very long time because it's so fun and useful.
-## Functions in the future
-- be able to see the questions and their answers according to the key word
-- store the content and read it even there are no network connections
-- machine learning and differ from zhihu
-- housekeeper will warn me if I get addicited to some unuseful questions (sounds like maching learning)
+Inspired by [duduainankai/zhihu-terminal](https://github.com/search?utf8=%E2%9C%93&q=zhihu+terminal)  
+I decide to make a new simple one, which will contain some funny actions.   
+zhihu-in-terminal will be maintain in a long term because it's so fun.
+## Available Functions
+- be able to find all the questions according to the key words
+- be able to read some of the answers under one question
+- download the pictures in one question
+- find searching history
+- simple time warning
+## Functions In The Future
 - colorful text
-- step by step
+- read all answers under one question
+- faster questions loading speed 
+- faster download speed
