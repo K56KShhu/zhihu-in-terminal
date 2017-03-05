@@ -8,7 +8,7 @@ zhihu-in-terminal will be maintain in a long term because it's so fun.
 - be able to read some of the answers under one question
 - fastly download the pictures in one question
 - find searching history
-- simple time warning
+- simple time warning  
 ## Functions In The Future
 - colorful text
 - read all answers under one question
