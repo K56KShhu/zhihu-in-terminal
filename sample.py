@@ -250,6 +250,7 @@ while True:
         print("* < more >                    <----show more questions")
         print("* < go [question index] >")
         print("* < imags [question index] >  <----download the imags on this question")
+        print("* < history >                 <----searching history")
         print("* < back >                    <----back to questions page")
         print("* < help >                    <----show this page")
         print("                              <----made by zkyyo")
