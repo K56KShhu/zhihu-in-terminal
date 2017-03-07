@@ -1,5 +1,6 @@
 import os
 import time
+import pymysql
 import requests
 from threading import Thread
 from bs4 import BeautifulSoup
@@ -22,7 +23,7 @@ def get_questions(url):
     driver.get(url)
 
     # 2 times default
-    for i in range(2):
+    for i in range(1):
         print("[{}]waiting..." .format(i))
         try:
             page_button = driver.find_element(By.CLASS_NAME, "zu-button-more")
@@ -186,6 +187,25 @@ def find_imags(url, s, headers):
     return imags_amount
 
 
+def database(questions):
+    conn = pymysql.connect(host='127.0.0.1', user='root', passwd=***, db='mysql', charset='utf8')
+    cur = conn.cursor()
+    cur.execute("USE zhihu_terminal")
+
+    for q in questions:
+        question = q[1]
+        vote = q[2]
+        vote = int(vote)
+        url = q[0]
+        cur.execute("INSERT INTO topics (question, vote, url) VALUES (\"{}\", \"{}\", \"{}\")" .format(question, vote, url))
+
+    cur.connection.commit()
+    cur.execute("SELECT * FROM topics")
+    print(cur.fetchall())
+    cur.close()
+    conn.close()
+
+
 begin = time.time()
 search_history_bag = []
 link_bag = []
@@ -264,3 +284,10 @@ while True:
     # author
     elif action[0] == "zkyyo":
         print("* it's me")
+    elif action[0] == "test":
+        try:
+            database(one_topic_bag)
+            for t in one_topic_bag:
+                print(t)
+        except NameError:
+            print("* please search first")
