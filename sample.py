@@ -146,12 +146,16 @@ def find_imags(url, s, headers):
     bs0bj = BeautifulSoup(r.text, "lxml")
 
     def download_imags(imag_link):
+        directory = '/home/xu/a-project/zhihu-in-terminal/pictures/' 
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
         save_path = imag_link.split("/")
-        save_path = '/home/xu/a-project/zhihu-in-terminal/pictures/' + save_path[-1]
+        save_path = directory + save_path[-1]
         imag_link = imag_link.replace("_b", "")
-        print(imags_amount, imag_link)
+        print(imag_link)
         urlretrieve(imag_link, save_path)
-        imags_amount += 1
 
     answers = bs0bj.findAll("div", {"class": "List-item"})
     if answers != []:
@@ -174,6 +178,7 @@ def find_imags(url, s, headers):
                     t = Thread(target = download_imags, args=[imag_link])
                     t.start()
                     threads.append(t)
+                    imags_amount += 1
 
     for t in threads:
         t.join()
@@ -228,7 +233,6 @@ while True:
         try:
             index_enter = int(action[1])
             url = "https://www.zhihu.com" + one_topic_bag[index_enter][0]
-            print(url)
             imags_amount = find_imags(url, s, headers)
             print("* successfully download {} imagas" .format(imags_amount))
         except:
