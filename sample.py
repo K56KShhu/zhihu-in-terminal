@@ -23,7 +23,7 @@ def get_questions(url):
     driver.get(url)
 
     # 2 times default
-    for i in range(1):
+    for i in range(2):
         print("[{}]waiting..." .format(i))
         try:
             page_button = driver.find_element(By.CLASS_NAME, "zu-button-more")
@@ -188,22 +188,47 @@ def find_imags(url, s, headers):
 
 
 def database(questions):
-    conn = pymysql.connect(host='127.0.0.1', user='root', passwd=***, db='mysql', charset='utf8')
+    global key_words
+    conn = pymysql.connect(host='127.0.0.1', user='root', passwd=, db='mysql', charset='utf8')
     cur = conn.cursor()
     cur.execute("USE zhihu_terminal")
 
-    for q in questions:
-        question = q[1]
-        vote = q[2]
-        vote = int(vote)
-        url = q[0]
-        cur.execute("INSERT INTO topics (question, vote, url) VALUES (\"{}\", \"{}\", \"{}\")" .format(question, vote, url))
+    key = ""
+    for key_word in key_words:
+        key += key_word
+        key += " "
 
-    cur.connection.commit()
-    cur.execute("SELECT * FROM topics")
-    print(cur.fetchall())
-    cur.close()
-    conn.close()
+    try:
+        for q in questions:
+            question = q[1]
+            vote = q[2]
+            vote = int(vote)
+            url = q[0]
+            cur.execute("INSERT INTO topics3 (key_word, question, vote, url) VALUES (\"{}\", \"{}\", \"{}\", \"{}\")" .format(key, question, vote, url))
+
+        cur.connection.commit()
+        cur.execute("SELECT * FROM topics")
+        print(cur.fetchall())
+    finally:
+        cur.close()
+        conn.close()
+
+
+def show_database():
+    conn = pymysql.connect(host='127.0.0.1', user='root', passwd=, db='mysql', charset='utf8')
+    cur = conn.cursor()
+    cur.execute("USE zhihu_terminal")
+
+    try:
+        cur.execute("SELECT * FROM topics3")
+        data = cur.fetchall()
+        for i in data:
+            print(i)
+    finally:
+        cur.close()
+        conn.close()
+
+
 
 
 begin = time.time()
@@ -277,6 +302,7 @@ while True:
         print("* < history >                 <----searching history")
         print("* < back >                    <----back to questions page")
         print("* < help >                    <----show this page")
+        print("* < test >                    <----something new")
         print("                              <----made by zkyyo")
     # show the history of the key words
     elif action[0] == "history":
@@ -284,10 +310,13 @@ while True:
     # author
     elif action[0] == "zkyyo":
         print("* it's me")
-    elif action[0] == "test":
+    elif action[0] == "test1":
         try:
             database(one_topic_bag)
             for t in one_topic_bag:
                 print(t)
         except NameError:
             print("* please search first")
+    elif action[0] == 'test2':
+        show_database()
+

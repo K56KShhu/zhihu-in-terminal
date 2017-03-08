@@ -9,6 +9,7 @@ zhihu-in-terminal will be maintain in a long term because it's so fun.
 - fastly download the pictures in one question
 - find searching history
 - simple time warning  
+- MySQL support
 
 
 ## Functions In The Future
