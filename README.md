@@ -8,6 +8,7 @@ zhihu-in-terminal will be maintain in a long term because it's so fun.
 - be able to read some of the answers under one question
 - fastly download the pictures in one question
 - find searching history
+- don't need to login
 - simple time warning  
 - MySQL support
 
